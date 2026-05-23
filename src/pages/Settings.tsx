@@ -14,40 +14,66 @@ export function Settings() {
   const [reminderEnabled, setReminderEnabled] = useState(false)
   const [reminderTime, setReminderTime] = useState('09:00')
   const [goalAlert, setGoalAlert] = useState(true)
+  const [statusMessage, setStatusMessage] = useState<string | null>(null)
+  const [statusError, setStatusError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!settings) return
-    setWeekday(settings.weekday_goal_minutes)
-    setWeekendMin(settings.weekend_min_goal_minutes)
-    setWeekendMax(settings.weekend_max_goal_minutes)
-    setReminderEnabled(settings.reminder_enabled)
-    setReminderTime(settings.reminder_time)
-    setGoalAlert(settings.goal_alert_enabled)
+
+    queueMicrotask(() => {
+      setWeekday(settings.weekday_goal_minutes)
+      setWeekendMin(settings.weekend_min_goal_minutes)
+      setWeekendMax(settings.weekend_max_goal_minutes)
+      setReminderEnabled(settings.reminder_enabled)
+      setReminderTime(settings.reminder_time)
+      setGoalAlert(settings.goal_alert_enabled)
+    })
   }, [settings])
   const [saved, setSaved] = useState(false)
   const [exporting, setExporting] = useState(false)
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    await saveSettings({
-      weekday_goal_minutes: weekday,
-      weekend_min_goal_minutes: weekendMin,
-      weekend_max_goal_minutes: weekendMax,
-      reminder_enabled: reminderEnabled,
-      reminder_time: reminderTime,
-      goal_alert_enabled: goalAlert,
-    })
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    setStatusError(null)
+    setStatusMessage(null)
+
+    if (weekendMax < weekendMin) {
+      setStatusError('Weekend maximum must be greater than or equal to the weekend minimum.')
+      return
+    }
+
+    try {
+      await saveSettings({
+        weekday_goal_minutes: weekday,
+        weekend_min_goal_minutes: weekendMin,
+        weekend_max_goal_minutes: weekendMax,
+        reminder_enabled: reminderEnabled,
+        reminder_time: reminderTime,
+        goal_alert_enabled: goalAlert,
+      })
+      setSaved(true)
+      setStatusMessage('Settings saved successfully.')
+      setTimeout(() => setSaved(false), 2000)
+    } catch (error) {
+      setStatusError(error instanceof Error ? error.message : 'Unable to save settings right now.')
+    }
   }
 
   const enableNotifications = async () => {
     const ok = await requestNotificationPermission()
-    if (ok) setReminderEnabled(true)
+    if (ok) {
+      setReminderEnabled(true)
+      setStatusMessage('Browser notifications are enabled.')
+      setStatusError(null)
+      return
+    }
+
+    setStatusError('Notifications are blocked in this browser. Update your browser permissions and try again.')
   }
 
   const handleExport = async () => {
     setExporting(true)
+    setStatusError(null)
     try {
       const data = await exportData()
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
@@ -57,6 +83,9 @@ export function Settings() {
       a.download = `switchtrack-export-${new Date().toISOString().slice(0, 10)}.json`
       a.click()
       URL.revokeObjectURL(url)
+      setStatusMessage('Your data export has started.')
+    } catch (error) {
+      setStatusError(error instanceof Error ? error.message : 'Unable to export your data right now.')
     } finally {
       setExporting(false)
     }
@@ -113,6 +142,9 @@ export function Settings() {
           <p className="hint">Keep this app installed on your phone for best results. Reminders work while the app is open or installed as PWA.</p>
         </section>
 
+        <p className={`status-message${statusError ? ' error' : ''}`} aria-live="polite">
+          {statusError ?? statusMessage ?? ' '}
+        </p>
         <button type="submit" className="btn btn-primary full">
           {saved ? 'Saved!' : 'Save settings'}
         </button>

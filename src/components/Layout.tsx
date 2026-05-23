@@ -11,7 +11,10 @@ const nav = [
 export function Layout() {
   return (
     <div className="layout">
-      <main className="layout-main">
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
+      <main id="main-content" className="layout-main">
         <Outlet />
       </main>
       <nav className="bottom-nav" aria-label="Main">

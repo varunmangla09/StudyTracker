@@ -48,6 +48,16 @@
   line-height: 1.4;
 }
 
+.status-message {
+  min-height: 1.4rem;
+  margin: 0;
+  color: var(--success);
+}
+
+.status-message.error {
+  color: var(--danger);
+}
+
 .sign-out {
   margin-top: 1rem;
   color: var(--danger) !important;

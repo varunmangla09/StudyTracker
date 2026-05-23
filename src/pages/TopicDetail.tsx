@@ -29,6 +29,16 @@ export function TopicDetail() {
       .reverse()
   }, [topicEntries, month])
 
+  const recentSessions = useMemo(
+    () =>
+      topicEntries
+        .filter((entry) => (entry.duration_seconds ?? 0) > 0)
+        .slice(0, 5),
+    [topicEntries]
+  )
+
+  const activeDaysThisMonth = dailyBreakdown.length
+
   const todaySec = getTopicSeconds(id!, new Date())
   const monthSec = getTopicSeconds(id!, undefined, month)
 
@@ -62,6 +72,10 @@ export function TopicDetail() {
           <span className="stat-label">{format(month, 'MMMM')}</span>
           <strong>{formatDurationShort(monthSec)}</strong>
         </div>
+        <div className="stat-card card">
+          <span className="stat-label">Active days</span>
+          <strong>{activeDaysThisMonth}</strong>
+        </div>
       </div>
 
       <section>
@@ -74,6 +88,25 @@ export function TopicDetail() {
               <li key={day.toISOString()} className="day-row card">
                 <span>{format(day, 'EEE, MMM d')}</span>
                 <strong>{formatDurationShort(seconds)}</strong>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section>
+        <h2 className="section-title">Recent sessions</h2>
+        {recentSessions.length === 0 ? (
+          <p className="empty-hint">No completed sessions yet for this topic.</p>
+        ) : (
+          <ul className="session-list">
+            {recentSessions.map((entry) => (
+              <li key={entry.id} className="session-row card">
+                <div>
+                  <strong>{format(new Date(entry.started_at), 'EEE, MMM d')}</strong>
+                  <p className="hint">{format(new Date(entry.started_at), 'p')}</p>
+                </div>
+                <strong>{formatDurationShort(entry.duration_seconds ?? 0)}</strong>
               </li>
             ))}
           </ul>
