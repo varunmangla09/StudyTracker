@@ -1,0 +1,103 @@
+.session-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1rem;
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  background: rgba(4, 8, 16, 0.72);
+  backdrop-filter: blur(6px);
+  animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.session-modal {
+  width: min(100%, 420px);
+  animation: slide-up 0.25s ease;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.session-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.session-modal-swatch {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.session-modal h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.session-modal form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.optional-tag {
+  font-weight: 500;
+  text-transform: lowercase;
+  color: var(--text-muted);
+  opacity: 0.85;
+}
+
+.char-count {
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.session-modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.session-modal-actions .btn {
+  min-width: 6.5rem;
+}
+
+.session-modal .auth-error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
+@media (min-width: 560px) {
+  .session-modal-backdrop {
+    align-items: center;
+    padding-bottom: 1rem;
+  }
+}

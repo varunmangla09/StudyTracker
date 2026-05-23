@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { useData } from '../context/DataContext'
 import { TOPIC_COLORS, CATEGORIES, type Topic, type TopicType } from '../lib/types'
 import { TopicCard } from '../components/TopicCard'
+import { PageHeader } from '../components/PageHeader'
+import { LoadingState } from '../components/LoadingState'
 import './Topics.css'
 
 export function Topics() {
@@ -12,7 +14,7 @@ export function Topics() {
     updateTopic,
     removeTopic,
     activeEntry,
-    startTimer,
+    openStartSession,
     stopTimer,
     toggleHabit,
     isHabitDoneToday,
@@ -106,21 +108,19 @@ export function Topics() {
     })
   }, [topics, query, filterType, filterCategory])
 
-  if (loading) return <p className="loading">Loading…</p>
+  if (loading) return <LoadingState />
 
   return (
     <div className="page topics-page">
-      <header className="page-header row">
-        <div>
-          <h1>Topics</h1>
-          <p className="subtitle">
-            {visibleTopics.length} of {topics.length} topics visible
-          </p>
-        </div>
-        <button type="button" className="btn btn-primary" onClick={() => (showForm ? closeForm() : openCreateForm())}>
-          {showForm ? 'Close editor' : '+ Add topic'}
-        </button>
-      </header>
+      <PageHeader
+        title="Topics"
+        subtitle={`${visibleTopics.length} of ${topics.length} topics visible`}
+        action={
+          <button type="button" className="btn btn-primary" onClick={() => (showForm ? closeForm() : openCreateForm())}>
+            {showForm ? 'Close editor' : '+ Add topic'}
+          </button>
+        }
+      />
 
       <section className="card topics-toolbar" aria-label="Filter topics">
         <label>
@@ -208,9 +208,11 @@ export function Topics() {
               ))}
             </div>
           </fieldset>
-          <p className="hint" aria-live="polite">
-            {formError ?? ' '}
-          </p>
+          {formError && (
+            <p className="auth-error" aria-live="polite">
+              {formError}
+            </p>
+          )}
           <button type="submit" className="btn btn-primary full" disabled={saving}>
             {saving ? 'Saving…' : editingId ? 'Save changes' : 'Create topic'}
           </button>
@@ -247,7 +249,7 @@ export function Topics() {
                 topic={t}
                 seconds={getTopicSeconds(t.id, new Date())}
                 isActive={activeEntry?.topic_id === t.id}
-                onStart={() => !activeEntry && startTimer(t.id)}
+                onStart={() => !activeEntry && openStartSession(t.id)}
                 onStop={() => stopTimer()}
               />
               <div className="topic-actions">

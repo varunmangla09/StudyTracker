@@ -53,10 +53,20 @@ export async function fetchTimeEntries(userId: string): Promise<TimeEntry[]> {
   return data ?? []
 }
 
-export async function startTimer(userId: string, topicId: string): Promise<TimeEntry> {
+export async function startTimer(
+  userId: string,
+  topicId: string,
+  note?: string | null
+): Promise<TimeEntry> {
+  const trimmed = note?.trim() || null
   const { data, error } = await client()
     .from('time_entries')
-    .insert({ user_id: userId, topic_id: topicId, started_at: new Date().toISOString() })
+    .insert({
+      user_id: userId,
+      topic_id: topicId,
+      started_at: new Date().toISOString(),
+      note: trimmed,
+    })
     .select()
     .single()
   if (error) throw error

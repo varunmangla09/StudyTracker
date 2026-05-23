@@ -12,6 +12,8 @@ import {
 import { format } from 'date-fns'
 import { useData } from '../context/DataContext'
 import { last7Days, filterEntriesByDay, sumEntrySeconds, formatDurationShort } from '../lib/utils'
+import { PageHeader } from '../components/PageHeader'
+import { LoadingState } from '../components/LoadingState'
 import './Charts.css'
 
 export function Charts() {
@@ -55,14 +57,14 @@ export function Charts() {
   const topDay = [...chartData].sort((a, b) => b.seconds - a.seconds)[0]
   const averageMinutes = chartData.length > 0 ? Math.round(chartData.reduce((sum, day) => sum + day.minutes, 0) / chartData.length) : 0
 
-  if (loading) return <p className="loading">Loading…</p>
+  if (loading) return <LoadingState />
 
   return (
     <div className="page charts-page">
-      <header className="page-header">
-        <h1>Weekly charts</h1>
-        <p className="subtitle">Last 7 days · {formatDurationShort(weekTotal)} total</p>
-      </header>
+      <PageHeader
+        title="Weekly charts"
+        subtitle={`Last 7 days · ${formatDurationShort(weekTotal)} total`}
+      />
 
       {weekTotal === 0 ? (
         <section className="card empty-state">
@@ -110,17 +112,31 @@ export function Charts() {
               </div>
             </div>
             <div className="chart-wrap">
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={chartData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
-                  <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 12 }} unit="m" />
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={chartData} margin={{ top: 12, right: 8, left: -16, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#a8b0ff" />
+                      <stop offset="100%" stopColor="#6366f1" />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(43, 61, 90, 0.8)" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fill: '#9cafc8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#9cafc8', fontSize: 12 }} unit="m" axisLine={false} tickLine={false} />
                   <Tooltip
-                    contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}
+                    cursor={{ fill: 'rgba(124, 131, 255, 0.08)' }}
+                    contentStyle={{
+                      background: '#182942',
+                      border: '1px solid #415776',
+                      borderRadius: 12,
+                      boxShadow: '0 12px 32px rgba(0,0,0,0.35)',
+                    }}
+                    labelStyle={{ color: '#edf3fb', fontWeight: 600 }}
+                    itemStyle={{ color: '#a8b0ff' }}
                     labelFormatter={(_, payload) => payload?.[0]?.payload?.fullDate ?? ''}
-                    formatter={(value) => [`${value} min`, 'Time']}
+                    formatter={(value) => [`${value} min`, 'Study time']}
                   />
-                  <Bar dataKey="minutes" fill="var(--accent)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="minutes" fill="url(#barGradient)" radius={[8, 8, 0, 0]} maxBarSize={48} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -144,7 +160,7 @@ export function Charts() {
                       contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}
                       formatter={(value) => [`${value} min`, 'Time']}
                     />
-                    <Bar dataKey="minutes" fill="var(--accent-light)" radius={[0, 4, 4, 0]} />
+                    <Bar dataKey="minutes" fill="#9ca8ff" radius={[0, 8, 8, 0]} maxBarSize={28} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

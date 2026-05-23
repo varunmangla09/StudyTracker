@@ -1,26 +1,119 @@
-.goal-card h2 {
-  margin: 0;
-  font-size: 0.95rem;
+.goal-hero {
+  overflow: hidden;
+  position: relative;
+}
+
+.goal-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 100% 0%, rgba(124, 131, 255, 0.15), transparent 55%);
+  pointer-events: none;
+}
+
+.goal-hero.complete::before {
+  background: radial-gradient(circle at 100% 0%, rgba(47, 208, 125, 0.18), transparent 55%);
+}
+
+.goal-hero-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.goal-ring-wrap {
+  position: relative;
+  width: 7.5rem;
+  height: 7.5rem;
+  flex-shrink: 0;
+}
+
+.goal-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.goal-ring-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 8;
+}
+
+.goal-ring-progress {
+  fill: none;
+  stroke: url(#goalGradient);
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.goal-hero.complete .goal-ring-progress {
+  stroke: var(--success);
+}
+
+.goal-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.goal-ring-pct {
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.goal-ring-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.goal-hero-copy {
+  min-width: 0;
+}
+
+.goal-hero-top {
+  margin-bottom: 0.65rem;
+}
+
+.goal-hero h2 {
+  margin: 0.5rem 0 0;
+  font-size: 1.1rem;
   font-weight: 600;
 }
 
-.goal-header {
+.goal-time {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
 }
 
-.goal-pct {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--accent);
+.goal-time strong {
+  font-size: 1.35rem;
+  color: var(--text);
+}
+
+.goal-time-sep {
+  color: var(--text-muted);
 }
 
 .goal-bar-track {
   position: relative;
-  height: 10px;
-  background: var(--bg);
+  height: 8px;
+  background: rgba(0, 0, 0, 0.25);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -29,7 +122,11 @@
   height: 100%;
   background: linear-gradient(90deg, var(--accent), var(--accent-light));
   border-radius: 999px;
-  transition: width 0.4s ease;
+  transition: width 0.45s ease;
+}
+
+.goal-hero.complete .goal-bar-fill {
+  background: linear-gradient(90deg, var(--success), #5eead4);
 }
 
 .goal-bar-min-marker {
@@ -41,12 +138,22 @@
   transform: translateX(-50%);
 }
 
-.goal-stats {
-  margin: 0.5rem 0 0;
-  font-size: 0.85rem;
-  color: var(--text-muted);
+.goal-remaining {
+  margin-top: 0.5rem;
 }
 
-.goal-stats strong {
-  color: var(--text);
+@media (max-width: 520px) {
+  .goal-hero-grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .goal-hero-copy {
+    width: 100%;
+  }
+
+  .goal-time {
+    justify-content: center;
+  }
 }

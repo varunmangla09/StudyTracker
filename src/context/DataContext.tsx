@@ -35,7 +35,10 @@ interface DataContextValue {
   addTopic: (p: { name: string; type: TopicType; color: string; category: string }) => Promise<void>
   updateTopic: (id: string, p: Partial<Pick<Topic, 'name' | 'color' | 'category'>>) => Promise<void>
   removeTopic: (id: string) => Promise<void>
-  startTimer: (topicId: string) => Promise<void>
+  pendingStartTopicId: string | null
+  openStartSession: (topicId: string) => void
+  cancelStartSession: () => void
+  confirmStartSession: (note?: string) => Promise<void>
   stopTimer: () => Promise<void>
   toggleHabit: (topicId: string) => Promise<void>
   isHabitDoneToday: (topicId: string) => boolean
@@ -64,6 +67,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [habitLogs, setHabitLogs] = useState<HabitLog[]>([])
   const [settings, setSettings] = useState<UserSettings | null>(null)
   const [tick, setTick] = useState(0)
+  const [pendingStartTopicId, setPendingStartTopicId] = useState<string | null>(null)
 
   const activeEntry = useMemo(
     () => timeEntries.find((e) => !e.ended_at) ?? null,
@@ -158,9 +162,19 @@ export function DataProvider({ children }: { children: ReactNode }) {
     await refresh()
   }
 
-  const startTimer = async (topicId: string) => {
-    if (!user || activeEntry) return
-    await api.startTimer(user.id, topicId)
+  const openStartSession = useCallback((topicId: string) => {
+    if (activeEntry) return
+    setPendingStartTopicId(topicId)
+  }, [activeEntry])
+
+  const cancelStartSession = useCallback(() => {
+    setPendingStartTopicId(null)
+  }, [])
+
+  const confirmStartSession = async (note?: string) => {
+    if (!user || !pendingStartTopicId || activeEntry) return
+    await api.startTimer(user.id, pendingStartTopicId, note)
+    setPendingStartTopicId(null)
     await refresh()
   }
 
@@ -220,7 +234,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
         addTopic,
         updateTopic: updateTopicFn,
         removeTopic,
-        startTimer,
+        pendingStartTopicId,
+        openStartSession,
+        cancelStartSession,
+        confirmStartSession,
         stopTimer,
         toggleHabit,
         isHabitDoneToday,

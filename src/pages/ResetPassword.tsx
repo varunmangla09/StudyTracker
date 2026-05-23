@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { LoadingState } from '../components/LoadingState'
 import './Auth.css'
 
 export function ResetPassword() {
@@ -37,7 +38,7 @@ export function ResetPassword() {
   if (authLoading) {
     return (
       <div className="auth-page">
-        <p className="hint" style={{ textAlign: 'center' }}>Verifying reset link…</p>
+        <LoadingState label="Verifying reset link…" />
       </div>
     )
   }
@@ -45,15 +46,17 @@ export function ResetPassword() {
   if (!ready) {
     return (
       <div className="auth-page">
-        <div className="auth-card card">
-          <h1>Reset link invalid or expired</h1>
-          <p className="hint">
-            Request a new link from the sign-in page. Make sure <code>npm run dev</code> is running and
-            open the link on this PC at <code>http://localhost:5173</code>.
-          </p>
-          <Link to="/" className="btn btn-primary full" style={{ textAlign: 'center', textDecoration: 'none' }}>
-            Back to sign in
-          </Link>
+        <div className="auth-shell">
+          <div className="auth-card card">
+            <h1>Reset link invalid or expired</h1>
+            <p className="hint">
+              Request a new link from the sign-in page. Make sure <code>npm run dev</code> is running and
+              open the link on this PC at <code>http://localhost:5173</code>.
+            </p>
+            <Link to="/" className="btn btn-primary full">
+              Back to sign in
+            </Link>
+          </div>
         </div>
       </div>
     )
@@ -61,41 +64,43 @@ export function ResetPassword() {
 
   return (
     <div className="auth-page">
-      <div className="auth-brand">
-        <h1>New password</h1>
-        <p>Enter a new password — you won&apos;t use the old one anymore</p>
-      </div>
-      <form className="auth-card card" onSubmit={handleSubmit}>
-        <p className="hint auth-helper">Choose a password with at least 6 characters so you can sign in again right away.</p>
-        <label>
-          New password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-            autoComplete="new-password"
-          />
-        </label>
-        <label>
-          Confirm password
-          <input
-            type="password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            required
-            minLength={6}
-            autoComplete="new-password"
-          />
-        </label>
-        <div aria-live="polite" className="auth-status">
-          {error && <p className="auth-error">{error}</p>}
+      <div className="auth-shell">
+        <div className="auth-brand">
+          <div className="auth-logo-large" aria-hidden />
+          <h1>New password</h1>
+          <p>Enter a new password — you won&apos;t use the old one anymore</p>
         </div>
-        <button type="submit" className="btn btn-primary full" disabled={loading}>
-          {loading ? 'Saving…' : 'Update password'}
-        </button>
-      </form>
+        <form className="auth-card card" onSubmit={handleSubmit}>
+          <label>
+            New password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              autoComplete="new-password"
+            />
+          </label>
+          <label>
+            Confirm password
+            <input
+              type="password"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              required
+              minLength={6}
+              autoComplete="new-password"
+            />
+          </label>
+          <div aria-live="polite" className="auth-status">
+            {error && <p className="auth-error">{error}</p>}
+          </div>
+          <button type="submit" className="btn btn-primary full" disabled={loading}>
+            {loading ? 'Saving…' : 'Update password'}
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
