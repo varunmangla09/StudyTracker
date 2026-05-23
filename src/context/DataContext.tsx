@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
   useCallback,
@@ -89,13 +90,18 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, [user])
 
   useEffect(() => {
-    if (user) refresh()
-    else {
-      setTopics([])
-      setTimeEntries([])
-      setHabitLogs([])
-      setSettings(null)
-      setLoading(false)
+    if (user) {
+      queueMicrotask(() => {
+        void refresh()
+      })
+    } else {
+      queueMicrotask(() => {
+        setTopics([])
+        setTimeEntries([])
+        setHabitLogs([])
+        setSettings(null)
+        setLoading(false)
+      })
     }
   }, [user, refresh])
 
