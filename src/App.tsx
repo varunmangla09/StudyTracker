@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
 import { Layout } from './components/Layout'
+import { LoadingState } from './components/LoadingState'
 
 const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })))
 const Topics = lazy(() => import('./pages/Topics').then((module) => ({ default: module.Topics })))
@@ -17,11 +18,7 @@ const ResetPassword = lazy(() =>
 )
 
 function RouteLoader() {
-  return (
-    <div className="loading-screen">
-      <p>Loading…</p>
-    </div>
-  )
+  return <LoadingState />
 }
 
 function AppRoutes() {

@@ -1,8 +1,9 @@
-import { useMemo } from 'react'
+import { useMemo, type CSSProperties } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { format, startOfMonth, eachDayOfInterval, endOfMonth } from 'date-fns'
 import { useData } from '../context/DataContext'
 import { formatDurationShort, filterEntriesByDay, sumEntrySeconds } from '../lib/utils'
+import { LoadingState } from '../components/LoadingState'
 import './TopicDetail.css'
 
 export function TopicDetail() {
@@ -42,21 +43,33 @@ export function TopicDetail() {
   const todaySec = getTopicSeconds(id!, new Date())
   const monthSec = getTopicSeconds(id!, undefined, month)
 
-  if (loading) return <p className="loading">Loading…</p>
+  if (loading) return <LoadingState />
   if (!topic) {
     return (
       <div className="page">
-        <p>Topic not found.</p>
-        <Link to="/topics">← Back</Link>
+        <div className="card empty-state">
+          <h2>Topic not found</h2>
+          <p className="empty-hint">It may have been deleted or the link is invalid.</p>
+          <Link to="/topics" className="btn btn-primary">
+            Back to topics
+          </Link>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="page topic-detail-page">
-      <Link to="/topics" className="back-link">← Topics</Link>
-      <header className="topic-detail-header">
-        <div className="topic-dot" style={{ background: topic.color }} />
+      <Link to="/topics" className="back-link">
+        ← Topics
+      </Link>
+      <header
+        className="topic-detail-hero card"
+        style={{ '--topic-color': topic.color } as CSSProperties}
+      >
+        <span className="topic-hero-avatar" style={{ background: topic.color }}>
+          {topic.name.charAt(0).toUpperCase()}
+        </span>
         <div>
           <span className="topic-category">{topic.category}</span>
           <h1>{topic.name}</h1>
@@ -64,18 +77,18 @@ export function TopicDetail() {
       </header>
 
       <div className="stats-grid">
-        <div className="stat-card card">
-          <span className="stat-label">Today</span>
-          <strong>{formatDurationShort(todaySec)}</strong>
-        </div>
-        <div className="stat-card card">
-          <span className="stat-label">{format(month, 'MMMM')}</span>
-          <strong>{formatDurationShort(monthSec)}</strong>
-        </div>
-        <div className="stat-card card">
-          <span className="stat-label">Active days</span>
-          <strong>{activeDaysThisMonth}</strong>
-        </div>
+        <article className="stat-surface">
+          <span className="label">Today</span>
+          <strong className="mono">{formatDurationShort(todaySec)}</strong>
+        </article>
+        <article className="stat-surface">
+          <span className="label">{format(month, 'MMMM')}</span>
+          <strong className="mono">{formatDurationShort(monthSec)}</strong>
+        </article>
+        <article className="stat-surface">
+          <span className="label">Active days</span>
+          <strong className="mono">{activeDaysThisMonth}</strong>
+        </article>
       </div>
 
       <section>
@@ -105,8 +118,9 @@ export function TopicDetail() {
                 <div>
                   <strong>{format(new Date(entry.started_at), 'EEE, MMM d')}</strong>
                   <p className="hint">{format(new Date(entry.started_at), 'p')}</p>
+                  {entry.note && <p className="session-note">{entry.note}</p>}
                 </div>
-                <strong>{formatDurationShort(entry.duration_seconds ?? 0)}</strong>
+                <strong className="mono">{formatDurationShort(entry.duration_seconds ?? 0)}</strong>
               </li>
             ))}
           </ul>

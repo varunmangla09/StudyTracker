@@ -4,6 +4,8 @@ import { useData } from '../context/DataContext'
 import { GoalProgress } from '../components/GoalProgress'
 import { ActiveTimer } from '../components/ActiveTimer'
 import { TopicCard } from '../components/TopicCard'
+import { PageHeader } from '../components/PageHeader'
+import { LoadingState } from '../components/LoadingState'
 import { filterEntriesByDay, formatDurationShort, last7Days, sumEntrySeconds } from '../lib/utils'
 import './Home.css'
 
@@ -13,7 +15,7 @@ export function Home() {
     timeEntries,
     activeEntry,
     goalProgress,
-    startTimer,
+    openStartSession,
     stopTimer,
     toggleHabit,
     isHabitDoneToday,
@@ -77,14 +79,14 @@ export function Home() {
     }
   }, [topics.length, goalProgress, activeEntry, habitTopics.length, habitsDoneToday, activeDays, weeklyCategory])
 
-  if (loading) return <p className="loading">Loading…</p>
+  if (loading) return <LoadingState />
 
   return (
     <div className="page home-page">
-      <header className="page-header">
-        <h1>SwitchTrack</h1>
-        <p className="subtitle">A focused dashboard for job-switch study time, habits, and weekly momentum.</p>
-      </header>
+      <PageHeader
+        title="Dashboard"
+        subtitle="Study time, daily habits, and momentum for your job switch — all in one place."
+      />
 
       <GoalProgress {...goalProgress} />
       <ActiveTimer />
@@ -121,16 +123,14 @@ export function Home() {
       </section>
 
       <section className="card insight-card" aria-labelledby="focus-insight-heading">
-        <div className="panel-heading">
-          <div>
-            <h2 id="focus-insight-heading">Focus insight</h2>
-            <p className="hint">{insight.body}</p>
-          </div>
-          <Link to={insight.cta.to} className="btn btn-primary">
-            {insight.cta.label}
-          </Link>
-        </div>
-        <strong className="insight-title">{insight.title}</strong>
+        <span className="badge badge-accent">Focus insight</span>
+        <h2 id="focus-insight-heading" className="insight-title">
+          {insight.title}
+        </h2>
+        <p className="hint insight-body">{insight.body}</p>
+        <Link to={insight.cta.to} className="btn btn-primary">
+          {insight.cta.label}
+        </Link>
       </section>
 
       {habitTopics.length > 0 && (
@@ -167,7 +167,7 @@ export function Home() {
                 topic={t}
                 seconds={getTopicSeconds(t.id, new Date())}
                 isActive={activeEntry?.topic_id === t.id}
-                onStart={() => !activeEntry && startTimer(t.id)}
+                onStart={() => !activeEntry && openStartSession(t.id)}
                 onStop={() => stopTimer()}
               />
             ))}

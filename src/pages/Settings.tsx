@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { requestNotificationPermission } from '../lib/notifications'
+import { PageHeader } from '../components/PageHeader'
+import { LoadingState } from '../components/LoadingState'
 import './Settings.css'
 
 export function Settings() {
@@ -91,14 +93,11 @@ export function Settings() {
     }
   }
 
-  if (loading) return <p className="loading">Loading…</p>
+  if (loading) return <LoadingState />
 
   return (
     <div className="page settings-page">
-      <header className="page-header">
-        <h1>Settings</h1>
-        <p className="subtitle">{user?.email}</p>
-      </header>
+      <PageHeader title="Settings" subtitle={user?.email ?? 'Your account and preferences'} />
 
       <form className="settings-form" onSubmit={handleSave}>
         <section className="card">

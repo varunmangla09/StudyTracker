@@ -19,6 +19,7 @@ create table if not exists public.time_entries (
   started_at timestamptz not null,
   ended_at timestamptz,
   duration_seconds integer,
+  note text,
   created_at timestamptz not null default now()
 );
 

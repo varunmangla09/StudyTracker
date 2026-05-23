@@ -15,6 +15,7 @@ export function Auth() {
   if (!configured) {
     return (
       <div className="auth-page">
+        <div className="auth-shell">
         <div className="auth-card card">
           <h1>Setup required</h1>
           <p>
@@ -23,6 +24,7 @@ export function Auth() {
           </p>
           <p className="hint">See README.md for step-by-step instructions.</p>
         </div>
+        </div>
       </div>
     )
   }
@@ -30,6 +32,7 @@ export function Auth() {
   if (supabaseUrlMisconfigured) {
     return (
       <div className="auth-page">
+        <div className="auth-shell">
         <div className="auth-card card">
           <h1>Fix your .env URL</h1>
           <p>
@@ -42,6 +45,7 @@ export function Auth() {
             Wrong: <code>https://xxxxx.supabase.co/rest/v1</code>
           </p>
           <p className="hint">Update <code>.env</code>, then restart <code>npm run dev</code>.</p>
+        </div>
         </div>
       </div>
     )
@@ -77,7 +81,9 @@ export function Auth() {
 
   return (
     <div className="auth-page">
+      <div className="auth-shell">
       <div className="auth-brand">
+        <div className="auth-logo-large" aria-hidden />
         <h1>SwitchTrack</h1>
         <p>Track job-switch study time & daily habits</p>
       </div>
@@ -159,6 +165,7 @@ export function Auth() {
           </button>
         )}
       </form>
+      </div>
     </div>
   )
 }

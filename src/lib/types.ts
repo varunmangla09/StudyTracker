@@ -17,8 +17,11 @@ export interface TimeEntry {
   started_at: string
   ended_at: string | null
   duration_seconds: number | null
+  note: string | null
   created_at: string
 }
+
+export const MAX_SESSION_NOTE_LENGTH = 120
 
 export interface HabitLog {
   id: string
