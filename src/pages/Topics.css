@@ -1,0 +1,89 @@
+.page-header.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.add-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.add-form input,
+.add-form select {
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.color-picker {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.color-picker legend {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.color-swatch.selected {
+  border-color: var(--text);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+.topic-row-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.topic-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-right: 0.25rem;
+}
+
+.btn-icon.delete {
+  background: transparent;
+  border: none;
+  color: var(--danger);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  align-self: flex-end;
+}
+
+.btn.small {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+}

@@ -1,0 +1,58 @@
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings-form section h2,
+.settings-page .card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.settings-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.settings-form input[type='number'],
+.settings-form input[type='time'] {
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.checkbox-row {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.5rem !important;
+  color: var(--text) !important;
+  margin-top: 0.75rem !important;
+}
+
+.checkbox-row input {
+  width: auto;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0.25rem 0 0;
+  line-height: 1.4;
+}
+
+.sign-out {
+  margin-top: 1rem;
+  color: var(--danger) !important;
+}
+
+.install-hint {
+  margin-top: 0.75rem;
+}

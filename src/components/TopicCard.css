@@ -1,0 +1,66 @@
+.topic-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.topic-color {
+  width: 4px;
+  align-self: stretch;
+  border-radius: 4px;
+  flex-shrink: 0;
+  min-height: 48px;
+}
+
+.topic-link {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+
+.topic-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.topic-category {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.topic-time {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.streak {
+  font-size: 0.8rem;
+  color: var(--warning);
+}
+
+.timer-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-dim);
+}
+
+.habit-card.done {
+  opacity: 0.85;
+}
+
+.habit-btn {
+  min-width: 72px;
+}
+
+.habit-btn.done {
+  background: var(--success-dim);
+  color: var(--success);
+  border-color: var(--success);
+}
