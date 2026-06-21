@@ -5,6 +5,7 @@ import { TOPIC_COLORS, CATEGORIES, type Topic, type TopicType } from '../lib/typ
 import { TopicCard } from '../components/TopicCard'
 import { PageHeader } from '../components/PageHeader'
 import { LoadingState } from '../components/LoadingState'
+import { MarkHabitModal } from '../components/MarkHabitModal'
 import './Topics.css'
 
 export function Topics() {
@@ -16,7 +17,7 @@ export function Topics() {
     activeEntry,
     openStartSession,
     stopTimer,
-    toggleHabit,
+    openMarkHabit,
     isHabitDoneToday,
     getHabitStreak,
     getTopicSeconds,
@@ -227,7 +228,7 @@ export function Topics() {
                 topic={t}
                 streak={getHabitStreak(t.id)}
                 habitDone={isHabitDoneToday(t.id)}
-                onHabitTap={() => toggleHabit(t.id)}
+                onHabitTap={() => openMarkHabit(t.id)}
               />
               <div className="topic-actions">
                 <button type="button" className="btn btn-ghost small" onClick={() => openEditForm(t)}>
@@ -300,6 +301,7 @@ export function Topics() {
           </button>
         </div>
       )}
+      <MarkHabitModal />
     </div>
   )
 }

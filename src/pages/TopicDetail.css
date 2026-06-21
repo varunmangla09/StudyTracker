@@ -66,6 +66,18 @@
   border-radius: var(--radius-md);
 }
 
+.session-row {
+  align-items: center;
+}
+
+.session-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex: 1;
+}
+
 .session-row strong:last-child {
   color: var(--accent-light);
 }

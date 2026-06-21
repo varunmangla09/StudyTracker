@@ -6,6 +6,7 @@ import { ActiveTimer } from '../components/ActiveTimer'
 import { TopicCard } from '../components/TopicCard'
 import { PageHeader } from '../components/PageHeader'
 import { LoadingState } from '../components/LoadingState'
+import { MarkHabitModal } from '../components/MarkHabitModal'
 import { filterEntriesByDay, formatDurationShort, last7Days, sumEntrySeconds } from '../lib/utils'
 import './Home.css'
 
@@ -17,7 +18,7 @@ export function Home() {
     goalProgress,
     openStartSession,
     stopTimer,
-    toggleHabit,
+    openMarkHabit,
     isHabitDoneToday,
     getHabitStreak,
     getTopicSeconds,
@@ -143,7 +144,7 @@ export function Home() {
                 topic={t}
                 streak={getHabitStreak(t.id)}
                 habitDone={isHabitDoneToday(t.id)}
-                onHabitTap={() => toggleHabit(t.id)}
+                onHabitTap={() => openMarkHabit(t.id)}
               />
             ))}
           </div>
@@ -174,6 +175,7 @@ export function Home() {
           </div>
         )}
       </section>
+      <MarkHabitModal />
     </div>
   )
 }
