@@ -39,8 +39,17 @@ interface DataContextValue {
   openStartSession: (topicId: string) => void
   cancelStartSession: () => void
   confirmStartSession: (note?: string) => Promise<void>
+  pendingMarkHabitTopicId: string | null
+  openMarkHabit: (topicId: string) => void
+  cancelMarkHabit: () => void
+  confirmMarkHabit: (topicId: string, logDate: string) => Promise<void>
+  pendingEditEntryId: string | null
+  openEditSession: (entryId: string) => void
+  cancelEditSession: () => void
+  confirmEditSession: (entryId: string, updates: { started_at: string; ended_at: string; duration_seconds: number; note: string | null }) => Promise<void>
+  deleteSession: (entryId: string) => Promise<void>
   stopTimer: () => Promise<void>
-  toggleHabit: (topicId: string) => Promise<void>
+  toggleHabit: (topicId: string, logDate?: string) => Promise<void>
   isHabitDoneToday: (topicId: string) => boolean
   getHabitStreak: (topicId: string) => number
   getTopicSeconds: (topicId: string, day?: Date, month?: Date) => number
@@ -68,6 +77,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<UserSettings | null>(null)
   const [tick, setTick] = useState(0)
   const [pendingStartTopicId, setPendingStartTopicId] = useState<string | null>(null)
+  const [pendingMarkHabitTopicId, setPendingMarkHabitTopicId] = useState<string | null>(null)
+  const [pendingEditEntryId, setPendingEditEntryId] = useState<string | null>(null)
 
   const activeEntry = useMemo(
     () => timeEntries.find((e) => !e.ended_at) ?? null,
@@ -178,17 +189,56 @@ export function DataProvider({ children }: { children: ReactNode }) {
     await refresh()
   }
 
+  const openMarkHabit = useCallback((topicId: string) => {
+    setPendingMarkHabitTopicId(topicId)
+  }, [])
+
+  const cancelMarkHabit = useCallback(() => {
+    setPendingMarkHabitTopicId(null)
+  }, [])
+
+  const confirmMarkHabit = async (topicId: string, logDate: string) => {
+    if (!user) return
+    const exists = habitLogs.some((l) => l.topic_id === topicId && l.log_date === logDate)
+    await api.toggleHabitLog(user.id, topicId, logDate, exists)
+    setPendingMarkHabitTopicId(null)
+    await refresh()
+  }
+
   const stopTimer = async () => {
     if (!activeEntry) return
     await api.stopTimer(activeEntry.id, activeEntry.started_at)
     await refresh()
   }
 
-  const toggleHabit = async (topicId: string) => {
+  const toggleHabit = async (topicId: string, logDate?: string) => {
     if (!user) return
-    const today = todayStr()
-    const exists = habitLogs.some((l) => l.topic_id === topicId && l.log_date === today)
-    await api.toggleHabitLog(user.id, topicId, today, exists)
+    const date = logDate || todayStr()
+    const exists = habitLogs.some((l) => l.topic_id === topicId && l.log_date === date)
+    await api.toggleHabitLog(user.id, topicId, date, exists)
+    await refresh()
+  }
+
+  const openEditSession = useCallback((entryId: string) => {
+    setPendingEditEntryId(entryId)
+  }, [])
+
+  const cancelEditSession = useCallback(() => {
+    setPendingEditEntryId(null)
+  }, [])
+
+  const confirmEditSession = async (
+    entryId: string,
+    updates: { started_at: string; ended_at: string; duration_seconds: number; note: string | null }
+  ) => {
+    await api.updateTimeEntry(entryId, updates)
+    setPendingEditEntryId(null)
+    await refresh()
+  }
+
+  const deleteSession = async (entryId: string) => {
+    await api.deleteTimeEntry(entryId)
+    setPendingEditEntryId(null)
     await refresh()
   }
 
@@ -238,6 +288,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
         openStartSession,
         cancelStartSession,
         confirmStartSession,
+        pendingMarkHabitTopicId,
+        openMarkHabit,
+        cancelMarkHabit,
+        confirmMarkHabit,
+        pendingEditEntryId,
+        openEditSession,
+        cancelEditSession,
+        confirmEditSession,
+        deleteSession,
         stopTimer,
         toggleHabit,
         isHabitDoneToday,

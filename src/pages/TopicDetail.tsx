@@ -4,11 +4,12 @@ import { format, startOfMonth, eachDayOfInterval, endOfMonth } from 'date-fns'
 import { useData } from '../context/DataContext'
 import { formatDurationShort, filterEntriesByDay, sumEntrySeconds } from '../lib/utils'
 import { LoadingState } from '../components/LoadingState'
+import { EditSessionModal } from '../components/EditSessionModal'
 import './TopicDetail.css'
 
 export function TopicDetail() {
   const { id } = useParams<{ id: string }>()
-  const { topics, timeEntries, getTopicSeconds, loading } = useData()
+  const { topics, timeEntries, getTopicSeconds, loading, openEditSession } = useData()
 
   const topic = topics.find((t) => t.id === id)
   const month = useMemo(() => startOfMonth(new Date()), [])
@@ -115,17 +116,28 @@ export function TopicDetail() {
           <ul className="session-list">
             {recentSessions.map((entry) => (
               <li key={entry.id} className="session-row card">
-                <div>
-                  <strong>{format(new Date(entry.started_at), 'EEE, MMM d')}</strong>
-                  <p className="hint">{format(new Date(entry.started_at), 'p')}</p>
-                  {entry.note && <p className="session-note">{entry.note}</p>}
+                <div className="session-details">
+                  <div>
+                    <strong>{format(new Date(entry.started_at), 'EEE, MMM d')}</strong>
+                    <p className="hint">{format(new Date(entry.started_at), 'p')}</p>
+                    {entry.note && <p className="session-note">{entry.note}</p>}
+                  </div>
+                  <strong className="mono">{formatDurationShort(entry.duration_seconds ?? 0)}</strong>
                 </div>
-                <strong className="mono">{formatDurationShort(entry.duration_seconds ?? 0)}</strong>
+                <button
+                  type="button"
+                  className="btn btn-ghost small"
+                  onClick={() => openEditSession(entry.id)}
+                  aria-label={`Edit session from ${format(new Date(entry.started_at), 'p')}`}
+                >
+                  Edit
+                </button>
               </li>
             ))}
           </ul>
         )}
       </section>
+      <EditSessionModal />
     </div>
   )
 }

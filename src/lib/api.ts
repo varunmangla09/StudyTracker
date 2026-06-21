@@ -87,6 +87,30 @@ export async function stopTimer(entryId: string, startedAt: string): Promise<Tim
   return data
 }
 
+export async function updateTimeEntry(
+  entryId: string,
+  payload: {
+    started_at?: string
+    ended_at?: string | null
+    duration_seconds?: number | null
+    note?: string | null
+  }
+): Promise<TimeEntry> {
+  const { data, error } = await client()
+    .from('time_entries')
+    .update(payload)
+    .eq('id', entryId)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function deleteTimeEntry(entryId: string): Promise<void> {
+  const { error } = await client().from('time_entries').delete().eq('id', entryId)
+  if (error) throw error
+}
+
 export async function fetchHabitLogs(userId: string): Promise<HabitLog[]> {
   const { data, error } = await client()
     .from('habit_logs')
