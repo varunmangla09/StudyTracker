@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
 import { dateStr, todayStr } from '../lib/utils'
-import { subDays, startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO } from 'date-fns'
+import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns'
 import './MarkHabitModal.css'
 
 export function MarkHabitModal() {
@@ -51,8 +51,6 @@ export function MarkHabitModal() {
     const dateString = dateStr(date)
     return habitLogs.some((l) => l.topic_id === pendingMarkHabitTopicId && l.log_date === dateString)
   }
-
-  const isDateSelected = selectedDate && dateStr(selectedDate) === dateStr(new Date(selectedDate))
 
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   const firstDayOfMonth = daysInMonth[0].getDay()
@@ -154,7 +152,7 @@ export function MarkHabitModal() {
             onClick={handleConfirm}
             disabled={saving || !selectedDate}
           >
-            {saving ? 'Saving...' : isDateMarked(selectedDate) ? 'Unmark' : 'Mark Done'}
+            {saving ? 'Saving...' : selectedDate && isDateMarked(selectedDate) ? 'Unmark' : 'Mark Done'}
           </button>
         </div>
       </dialog>
